@@ -9,7 +9,7 @@ if(isset($_SESSION['login'])==false)
 }
 else
 {
-	print $_SESSION['staff_name'];
+	print $_SESSION['name'];
 	print 'さんログイン中<br />';
 	print '<br />';
 }

@@ -122,7 +122,7 @@ if(isset($_SESSION['member_login'])==false)
 	</form>
 
 	<?php
-		if(isset($_SESSION['member_login']==true))
+		if(isset($_SESSION['member_login']))
 		{
 			print'<a href="shop_kantan_check.php">会員簡単注文へ進む</a><br>';
 		}

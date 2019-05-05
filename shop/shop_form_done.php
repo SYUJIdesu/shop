@@ -26,7 +26,7 @@ session_regenerate_id(true);
 	$address = $post['address'];
 	$tel = $post['tel'];
 	$chumon = $post['chumon'];
-	$pass = $post['pass'];
+	$user_pass = $post['pass'];
 	$danjo = $post['danjo'];
 	$birth = $post['birth'];
 
@@ -49,11 +49,9 @@ session_regenerate_id(true);
 	$max = count($cart);
 
 	
-	
-
 	for($i=0;$i<$max;$i++)
 	{
-		$dbh=new PDO('mysql:dbname=shop;host=localhost;charset=utf8',$user,$pass);
+		$dbh=new PDO('mysql:dbname=shop;host=localhost;port=3306;charset=utf8',$user,$pass);
 		$dbh->setAttribute(PDO::ATTR_ERRMODE,PDO::ERRMODE_EXCEPTION);
 		$sql='SELECT name,price FROM mst_product WHERE id=?';
 		$stmt=$dbh->prepare($sql);
@@ -77,17 +75,17 @@ session_regenerate_id(true);
 		$price = $result['price'];
 		$kakaku[] = $price;
 		
-		$sql = 'LOCK TABLES dat_sales WRITE, dat_sales_product WRITE,dat_member WRITE';
+		/*$sql = 'LOCK TABLES dat_sales WRITE, dat_sales_product WRITE,dat_member WRITE';
 		$stmt = $dbh->prepare($sql);
-		$stmt->execute();
+		$stmt->execute();*/
 
 		$lastmemberid = 0;
-		if($choumon=='chumontouroku')
+		if($chumon=='chumontouroku')
 		{
-			$sql='INSERT INTO dat_member(password,name,email,postal1,postal2,address,tel,danjo,born) VALUES(?,?,?,?,?,?,?,?,?,)';
-			$stmt = $dbh->($sql);
+			$sql='INSERT INTO dat_member(password,name,email,postal1,postal2,address,tel,danjo,born) VALUES(?,?,?,?,?,?,?,?,?)';
+			$stmt = $dbh->prepare($sql);
 			$data = array();
-			$data[] = md5($pass);
+			$data[] = md5($user_pass);
 			$data[]=$name;
 			$data[]=$email;
 			$data[]=$postal1;
@@ -100,7 +98,8 @@ session_regenerate_id(true);
 			}else{
 				$data[]=2;
 			}
-			$data=$birth;
+			$data[]=$birth;
+
 			$stmt->execute($data);
 
 			$sql = 'SELECT LAST_INSERT_ID()';
@@ -143,9 +142,11 @@ session_regenerate_id(true);
 		}
 	}
 
-		$sql = 'UNLOCK TABLES';
+		/*$sql = 'UNLOCK TABLES';
 		$stmt = $dbh->prepare($sql);
-		$stmt->execute();
+		$stmt->execute();*/
+
+
 		$dbh = null;
 
 

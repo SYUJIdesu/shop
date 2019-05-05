@@ -12,7 +12,7 @@ require_once('../common/common.php');
 
 $post=sanitize($_POST);
 
-$namae=$post['namae'];
+$name=$post['name'];
 $email=$post['email'];
 $postal1=$post['postal1'];
 $postal2=$post['postal2'];
@@ -26,7 +26,7 @@ $birth=$post['birth'];
 
 $okflg=true;
 
-if($namae=='')
+if($name=='')
 {
 	print 'お名前が入力されていません。<br /><br />';
 	$okflg=false;
@@ -34,7 +34,7 @@ if($namae=='')
 else
 {
 	print 'お名前<br />';
-	print $namae;
+	print $name;
 	print '<br /><br />';
 }
 
@@ -129,7 +129,7 @@ if($chumon=='chumontouroku')
 if($okflg==true)
 {
 	print '<form method="post" action="shop_form_done.php">';
-	print '<input type="hidden" name="onamae" value="'.$onamae.'">';
+	print '<input type="hidden" name="name" value="'.$name.'">';
 	print '<input type="hidden" name="email" value="'.$email.'">';
 	print '<input type="hidden" name="postal1" value="'.$postal1.'">';
 	print '<input type="hidden" name="postal2" value="'.$postal2.'">';
