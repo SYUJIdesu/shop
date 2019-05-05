@@ -25,6 +25,10 @@ session_regenerate_id(true);
 	$postal2 = $post['postal2'];
 	$address = $post['address'];
 	$tel = $post['tel'];
+	$chumon = $post['chumon'];
+	$pass = $post['pass'];
+	$danjo = $post['danjo'];
+	$birth = $post['birth'];
 
 	print "{$name}様<br>";
 	print "ご注文ありがとうございました。<br>";
@@ -73,11 +77,45 @@ session_regenerate_id(true);
 		$price = $result['price'];
 		$kakaku[] = $price;
 		
+		$sql = 'LOCK TABLES dat_sales WRITE, dat_sales_product WRITE,dat_member WRITE';
+		$stmt = $dbh->prepare($sql);
+		$stmt->execute();
+
+		$lastmemberid = 0;
+		if($choumon=='chumontouroku')
+		{
+			$sql='INSERT INTO dat_member(password,name,email,postal1,postal2,address,tel,danjo,born) VALUES(?,?,?,?,?,?,?,?,?,)';
+			$stmt = $dbh->($sql);
+			$data = array();
+			$data[] = md5($pass);
+			$data[]=$name;
+			$data[]=$email;
+			$data[]=$postal1;
+			$data[]=$postal2;
+			$data[]=$address;
+			$data[]=$tel;
+			if($danjo=='dan')
+			{
+				$data[]=1;
+			}else{
+				$data[]=2;
+			}
+			$data=$birth;
+			$stmt->execute($data);
+
+			$sql = 'SELECT LAST_INSERT_ID()';
+			$stmt=$dbh->prepare($sql);
+			$stmt->execute();
+			$rec=$stmt->fetch(PDO::FETCH_ASSOC);
+			$lastmemberid=$rec['LAST_INSERT_ID()'];
+
+
+		}
 
 		$sql='INSERT INTO dat_sales (id_member,name,email,postal1,postal2,address,tel) VALUES (?,?,?,?,?,?,?)';
 		$stmt=$dbh->prepare($sql);
 		$data=array();
-		$data[]=0;
+		$data[]=$lastmemberid;
 		$data[]=$name;
 		$data[]=$email;
 		$data[]=$postal1;
@@ -104,9 +142,20 @@ session_regenerate_id(true);
 			$stmt->execute($data);
 		}
 	}
+
+		$sql = 'UNLOCK TABLES';
+		$stmt = $dbh->prepare($sql);
+		$stmt->execute();
 		$dbh = null;
 
-		
+
+		if($chumon=='chumontouroku')
+		{
+			print '会員登録が完了いたしました。<br />';
+			print '次回からメールアドレスとパスワードでログインしてください。<br />';
+			print 'ご注文が簡単にできるようになります。<br />';
+			print '<br />';
+		}
 
 		$honbun .= "送料は無料です\n";
 		$honbun .= "-------------\n";
@@ -122,6 +171,14 @@ session_regenerate_id(true);
 		$honbun .= "電話番号 〇〇\n";
 		$honbun .= "メール 〇〇\n";
 		$honbun .= "□□□□□□□□□□□□□□□□\n";
+
+		if($chumon=='chumontouroku')
+		{
+			$honbun.="会員登録が完了いたしました。\n";
+			$honbun.="次回からメールアドレスとパスワードでログインしてください。\n";
+			$honbun.="ご注文が簡単にできるようになります。\n";
+			$honbun.="\n";
+		}
 		//print '<br>';
 		//print nl2br($honbun);
 
@@ -146,5 +203,8 @@ session_regenerate_id(true);
 	}
 
 	?>
+
+	<br>
+	<a href="shop_list.php">商品画面へ</a>
 	</body>
 </html>

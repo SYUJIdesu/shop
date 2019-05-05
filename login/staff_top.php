@@ -30,6 +30,8 @@ if(isset($_SESSION['login'])==false)
 		<br>
 		<a href="../pro/pro_list.php">商品管理</a>
 		<br>
+		<a htef="../order/order_download.php">注文ダウンロード</a>
+		<br>
 		<a href="logout.php">ログアウト</a>
 	</body>
 </html>
